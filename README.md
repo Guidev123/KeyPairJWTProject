@@ -100,7 +100,7 @@ app.UseJwksDiscovery();
 ```csharp
 public class AuthenticationDbContext : DbContext, ISecurityKeyContext
 {
-    public AuthenticationDbContext(DbContextOptions&lt;AuthenticationDbContext&gt; options)
+    public AuthenticationDbContext(DbContextOptions<AuthenticationDbContext> options)
         : base(options)
     {
     }
