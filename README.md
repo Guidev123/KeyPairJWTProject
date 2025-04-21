@@ -105,8 +105,8 @@ public class AuthenticationDbContext : IdentityDbContext, ISecurityKeyContext
     {
     }
 
-  public DbSet&lt;KeyMaterial&gt; SecurityKeys { get; set; }
-  public DbSet&lt;RefreshToken&gt; RefreshTokens { get; set; }
+  public DbSet<KeyMaterial> SecurityKeys { get; set; }
+  public DbSet<RefreshToken> RefreshTokens { get; set; }
 
    protected override void OnModelCreating(ModelBuilder builder)
     {
