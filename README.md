@@ -98,7 +98,7 @@ app.UseJwksDiscovery();
     <p>Define a database context to store security keys and refresh tokens.</p>
 
 ```csharp
-public class AuthenticationDbContext : IdentityDbContext, ISecurityKeyContext
+public class AuthenticationDbContext : DbContext, ISecurityKeyContext
 {
     public AuthenticationDbContext(DbContextOptions&lt;AuthenticationDbContext&gt; options)
         : base(options)
