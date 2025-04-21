@@ -6,10 +6,16 @@ using System.Collections.ObjectModel;
 
 namespace KeyPairJWT.Core.Jwt;
 
-internal class JwtService(IJsonWebKeyStore store, IOptions<JwtOptions> options) : IJwtService
+internal class JwtService : IJwtService
 {
-    private readonly IJsonWebKeyStore _store = store;
-    private readonly IOptions<JwtOptions> _options = options;
+    private readonly IJsonWebKeyStore _store;
+    private readonly IOptions<JwtOptions> _options;
+
+    public JwtService(IJsonWebKeyStore store, IOptions<JwtOptions> options)
+    {
+        _store = store;
+        _options = options;
+    }
 
     public async Task<SecurityKey> GenerateKey()
     {

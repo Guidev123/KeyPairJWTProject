@@ -9,17 +9,24 @@ using System.Collections.ObjectModel;
 
 namespace KeyPairJWT.EntityFramework;
 
-internal class DatabaseJsonWebKeyStore<TContext>(TContext context,
-               ILogger<DatabaseJsonWebKeyStore<TContext>> logger,
-               IOptions<JwtOptions> options,
-               IMemoryCache memoryCache)
-             : IJsonWebKeyStore where TContext
+internal class DatabaseJsonWebKeyStore<TContext> : IJsonWebKeyStore where TContext
              : DbContext, ISecurityKeyContext
 {
-    private readonly TContext _context = context;
-    private readonly IOptions<JwtOptions> _options = options;
-    private readonly IMemoryCache _memoryCache = memoryCache;
-    private readonly ILogger<DatabaseJsonWebKeyStore<TContext>> _logger = logger;
+    private readonly TContext _context;
+    private readonly IOptions<JwtOptions> _options;
+    private readonly IMemoryCache _memoryCache;
+    private readonly ILogger<DatabaseJsonWebKeyStore<TContext>> _logger;
+
+    public DatabaseJsonWebKeyStore(TContext context,
+                   ILogger<DatabaseJsonWebKeyStore<TContext>> logger,
+                   IOptions<JwtOptions> options,
+                   IMemoryCache memoryCache)
+    {
+        _context = context;
+        _options = options;
+        _memoryCache = memoryCache;
+        _logger = logger;
+    }
 
     public async Task Store(KeyMaterial securityParamteres)
     {

@@ -6,9 +6,14 @@ using System.Security.Claims;
 
 namespace KeyPairJWT.AspNet;
 
-public class JwtServiceValidationHandler(IServiceProvider serviceProvider) : JwtSecurityTokenHandler
+public class JwtServiceValidationHandler : JwtSecurityTokenHandler
 {
-    private readonly IServiceProvider _serviceProvider = serviceProvider;
+    private readonly IServiceProvider _serviceProvider;
+
+    public JwtServiceValidationHandler(IServiceProvider serviceProvider)
+    {
+        _serviceProvider = serviceProvider;
+    }
 
     public override ClaimsPrincipal ValidateToken(string token, TokenValidationParameters validationParameters, out SecurityToken validatedToken)
     {

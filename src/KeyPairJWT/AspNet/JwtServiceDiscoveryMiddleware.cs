@@ -8,9 +8,14 @@ using System.Text.Json.Serialization;
 
 namespace KeyPairJWT.AspNet;
 
-public class JwtServiceDiscoveryMiddleware(RequestDelegate next)
+public class JwtServiceDiscoveryMiddleware
 {
-    private readonly RequestDelegate _next = next;
+    private readonly RequestDelegate _next;
+
+    public JwtServiceDiscoveryMiddleware(RequestDelegate next)
+    {
+        _next = next;
+    }
 
     public async Task Invoke(HttpContext httpContext, IJwtService keyService, IOptions<JwtOptions> options)
     {

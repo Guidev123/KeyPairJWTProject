@@ -1,6 +1,6 @@
 ﻿namespace KeyPairJWT.Core.Jwa;
 
-public class DigitalSignaturesAlgorithm(string alg)
+public class DigitalSignaturesAlgorithm
 {
     public const string EcdsaSha256 = "ES256";
     public const string EcdsaSha384 = "ES384";
@@ -16,7 +16,12 @@ public class DigitalSignaturesAlgorithm(string alg)
     public const string RsaSsaPssSha384 = "PS384";
     public const string RsaSsaPssSha512 = "PS512";
 
-    public string Alg { get; set; } = alg;
+    public DigitalSignaturesAlgorithm(string alg)
+    {
+        Alg = alg;
+    }
+
+    public string Alg { get; set; }
 
     public static implicit operator string(DigitalSignaturesAlgorithm value) => value.Alg;
     public static implicit operator DigitalSignaturesAlgorithm(string value) => new(value);
