@@ -7,8 +7,8 @@
 		<Company>GR-Code</Company>
 		<Description>Library that facilitates working with assymetric keys</Description>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
-		<RepositoryUrl>https://github.com/Guidev123/MidRProject</RepositoryUrl>
-		<PackageProjectUrl>https://github.com/Guidev123/MidRProject</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/Guidev123/KeyPairJWTProject</RepositoryUrl>
+		<PackageProjectUrl>https://github.com/Guidev123/KeyPairJWTProject</PackageProjectUrl>
 		<Nullable>enable</Nullable>
 		<PackageReleaseNotes>Initial release with support for .NET 6.0, 7.0, 8.0, and 9.0.</PackageReleaseNotes>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
