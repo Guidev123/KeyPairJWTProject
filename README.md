@@ -33,7 +33,7 @@
 
    <h2>Installation</h2>
    <p>Install the <code>KeyPairJWT</code> package via NuGet:</p>
-    <pre><code>dotnet add package KeyPairJWT --version 1.0.0</code></pre>
+    <pre><code>dotnet add package KeyPairJWT --version 2.0.0</code></pre>
     <p>Find the latest version on <a href="https://www.nuget.org/packages/KeyPairJWT">NuGet.org</a>.</p>
 
    <h2>Prerequisites</h2>
