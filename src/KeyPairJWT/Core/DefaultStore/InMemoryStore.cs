@@ -1,4 +1,5 @@
 ﻿using KeyPairJWT.Core.Interfaces;
+using KeyPairJWT.Core.Jwa;
 using KeyPairJWT.Core.Models;
 using System.Collections.ObjectModel;
 
@@ -9,6 +10,7 @@ internal class InMemoryStore : IJsonWebKeyStore
     internal const string DefaultRevocationReason = "Revoked";
     private static readonly List<KeyMaterial> _store = new();
     private readonly SemaphoreSlim _slim = new(1);
+
     public Task Store(KeyMaterial keyMaterial)
     {
         _slim.Wait();
@@ -18,7 +20,7 @@ internal class InMemoryStore : IJsonWebKeyStore
         return Task.CompletedTask;
     }
 
-    public Task<KeyMaterial> GetCurrent()
+    public Task<KeyMaterial> GetCurrent(JwtType jwtKeyType = JwtType.Jws)
     {
         return Task.FromResult(_store.OrderByDescending(s => s.CreationDate).FirstOrDefault());
     }
@@ -40,7 +42,7 @@ internal class InMemoryStore : IJsonWebKeyStore
         }
     }
 
-    public Task<ReadOnlyCollection<KeyMaterial>> GetLastKeys(int quantity)
+    public Task<ReadOnlyCollection<KeyMaterial>> GetLastKeys(int quantity, JwtType? jwtKeyType = null)
     {
         return Task.FromResult(
             _store

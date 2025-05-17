@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace KeyPairJWT.EntityFramework;
+namespace KeyPairJWT.Store.EntityFramework;
 
 public static class EFCoreServiceExtensions
 {

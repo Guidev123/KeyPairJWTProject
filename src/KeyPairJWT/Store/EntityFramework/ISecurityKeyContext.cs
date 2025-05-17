@@ -1,7 +1,7 @@
 ﻿using KeyPairJWT.Core.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace KeyPairJWT.EntityFramework;
+namespace KeyPairJWT.Store.EntityFramework;
 
 public interface ISecurityKeyContext
 {

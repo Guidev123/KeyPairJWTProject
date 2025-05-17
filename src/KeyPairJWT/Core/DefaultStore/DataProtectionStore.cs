@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.DataProtection.KeyManagement;
-using Microsoft.AspNetCore.DataProtection.Repositories;
+﻿using KeyPairJWT.Core.Interfaces;
+using KeyPairJWT.Core.Jwa;
+using KeyPairJWT.Core.Models;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.DataProtection.KeyManagement;
+using Microsoft.AspNetCore.DataProtection.Repositories;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -10,9 +13,6 @@ using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Text.Json;
 using System.Xml.Linq;
-using KeyPairJWT.Core;
-using KeyPairJWT.Core.Models;
-using KeyPairJWT.Core.Interfaces;
 
 namespace KeyPairJWT.Core.DefaultStore
 {
@@ -25,7 +25,7 @@ namespace KeyPairJWT.Core.DefaultStore
         internal static readonly XName ExpirationDateElementName = "expirationDate";
         internal static readonly XName DescriptorElementName = "descriptor";
         internal static readonly XName DeserializerTypeAttributeName = "deserializerType";
-        internal static readonly XName RevocationElementName = "NetDevPackSecurityJwtRevocation";
+        internal static readonly XName RevocationElementName = "KeyPairJWTSecurityJwtRevocation";
         internal static readonly XName RevocationDateElementName = "revocationDate";
         internal static readonly XName ReasonElementName = "reason";
 
@@ -36,7 +36,7 @@ namespace KeyPairJWT.Core.DefaultStore
         private readonly IDataProtector _dataProtector;
         private IXmlRepository KeyRepository => _keyManagementOptions.Value.XmlRepository ?? GetFallbackKeyRepositoryEncryptorPair();
 
-        private const string Name = "NetDevPackSecurityJwt";
+        private const string Name = "KeyPairJWTSecurityJwt";
         internal const string DefaultRevocationReason = "Revoked";
 
         public DataProtectionStore(
@@ -52,6 +52,7 @@ namespace KeyPairJWT.Core.DefaultStore
             _memoryCache = memoryCache;
             _dataProtector = provider.CreateProtector(nameof(KeyMaterial)); ;
         }
+
         public Task Store(KeyMaterial securityParamteres)
         {
             var possiblyEncryptedKeyElement = _dataProtector.Protect(JsonSerializer.Serialize(securityParamteres));
@@ -73,9 +74,7 @@ namespace KeyPairJWT.Core.DefaultStore
             return Task.CompletedTask;
         }
 
-
-
-        public async Task<KeyMaterial> GetCurrent()
+        public async Task<KeyMaterial> GetCurrent(JwtType jwtKeyType = JwtType.Jws)
         {
             if (!_memoryCache.TryGetValue(JwkContants.CurrentJwkCache, out KeyMaterial keyMaterial))
             {
@@ -136,10 +135,8 @@ namespace KeyPairJWT.Core.DefaultStore
             return keys.ToList();
         }
 
-
-        public Task<ReadOnlyCollection<KeyMaterial>> GetLastKeys(int quantity = 5)
+        public Task<ReadOnlyCollection<KeyMaterial>> GetLastKeys(int quantity = 5, JwtType? jwtKeyType = null)
         {
-
             if (!_memoryCache.TryGetValue(JwkContants.JwksCache, out IReadOnlyCollection<KeyMaterial> keys))
             {
                 keys = GetKeys();
@@ -171,7 +168,6 @@ namespace KeyPairJWT.Core.DefaultStore
             }
         }
 
-
         public async Task Revoke(KeyMaterial keyMaterial, string reason = null)
         {
             if (keyMaterial == null)
@@ -192,12 +188,10 @@ namespace KeyPairJWT.Core.DefaultStore
                     new XAttribute(IdAttributeName, keyMaterial.Id)),
                 new XElement(ReasonElementName, revokeReason));
 
-
             var friendlyName = string.Format(CultureInfo.InvariantCulture, "revocation-{0}-{1:D}-{2:yyyy_MM_dd_hh_mm_fffffff}", keyMaterial.Type, keyMaterial.Id, DateTime.UtcNow);
             KeyRepository.StoreElement(revocationElement, friendlyName);
             ClearCache();
         }
-
 
         private void ClearCache()
         {
@@ -234,13 +228,11 @@ namespace KeyPairJWT.Core.DefaultStore
                     else
                     {
                         throw new Exception(
-                            "Is not possible to determine which folder are the protection keys. NetDevPack.Security.JwtSigningCredentials.Store.FileSystem or NetDevPack.Security.JwtSigningCredentials.Store.EntityFrameworkCore");
+                            "Is not possible to determine which folder are the protection keys. KeyPairJWT.Store.FileSystem or KeyPairJWT.Store.EntityFrameworkCore");
                     }
                 }
             }
             return key;
         }
-
-
     }
 }

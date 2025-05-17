@@ -1,5 +1,6 @@
 ﻿using KeyPairJWT.Core;
 using KeyPairJWT.Core.Interfaces;
+using KeyPairJWT.Core.Jwa;
 using KeyPairJWT.Core.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
@@ -7,7 +8,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Collections.ObjectModel;
 
-namespace KeyPairJWT.EntityFramework;
+namespace KeyPairJWT.Store.EntityFramework;
 
 internal class DatabaseJsonWebKeyStore<TContext> : IJsonWebKeyStore where TContext
              : DbContext, ISecurityKeyContext
@@ -37,13 +38,13 @@ internal class DatabaseJsonWebKeyStore<TContext> : IJsonWebKeyStore where TConte
         ClearCache();
     }
 
-    public async Task<KeyMaterial> GetCurrent()
+    public async Task<KeyMaterial> GetCurrent(JwtType jwtKeyType = JwtType.Jws)
     {
         if (!_memoryCache.TryGetValue(JwkContants.CurrentJwkCache, out KeyMaterial credentials))
         {
             credentials = await _context.SecurityKeys.Where(X => X.IsRevoked == false).OrderByDescending(d => d.CreationDate).AsNoTrackingWithIdentityResolution().FirstOrDefaultAsync();
-                credentials = await _context.SecurityKeys.Where(X => X.IsRevoked == false).OrderByDescending(d => d.CreationDate).AsNoTracking().FirstOrDefaultAsync();
-            
+            credentials = await _context.SecurityKeys.Where(X => X.IsRevoked == false).OrderByDescending(d => d.CreationDate).AsNoTracking().FirstOrDefaultAsync();
+
             var cacheEntryOptions = new MemoryCacheEntryOptions()
                 .SetSlidingExpiration(_options.Value.CacheTime);
 
@@ -56,12 +57,12 @@ internal class DatabaseJsonWebKeyStore<TContext> : IJsonWebKeyStore where TConte
         return credentials;
     }
 
-    public async Task<ReadOnlyCollection<KeyMaterial>> GetLastKeys(int quantity = 5)
+    public async Task<ReadOnlyCollection<KeyMaterial>> GetLastKeys(int quantity = 5, JwtType? jwtKeyType = null)
     {
         if (!_memoryCache.TryGetValue(JwkContants.JwksCache, out ReadOnlyCollection<KeyMaterial> keys))
         {
             keys = _context.SecurityKeys.OrderByDescending(d => d.CreationDate).Take(quantity).AsNoTrackingWithIdentityResolution().ToList().AsReadOnly();
-                keys = _context.SecurityKeys.OrderByDescending(d => d.CreationDate).Take(quantity).AsNoTracking().ToList().AsReadOnly();
+            keys = _context.SecurityKeys.OrderByDescending(d => d.CreationDate).Take(quantity).AsNoTracking().ToList().AsReadOnly();
             var cacheEntryOptions = new MemoryCacheEntryOptions()
                 .SetSlidingExpiration(_options.Value.CacheTime);
 
@@ -86,7 +87,6 @@ internal class DatabaseJsonWebKeyStore<TContext> : IJsonWebKeyStore where TConte
         await _context.SaveChangesAsync();
         ClearCache();
     }
-
 
     public async Task Revoke(KeyMaterial securityKeyWithPrivate, string reason = null)
     {

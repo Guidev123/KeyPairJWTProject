@@ -13,11 +13,13 @@ public class Algorithm
                 AlgorithmType = AlgorithmType.AES;
                 CryptographyType = CryptographyType.Encryption;
                 break;
+
             case EncryptionAlgorithmKey.RsaPKCS1:
             case EncryptionAlgorithmKey.RsaOAEP:
                 CryptographyType = CryptographyType.Encryption;
                 AlgorithmType = AlgorithmType.RSA;
                 break;
+
             case DigitalSignaturesAlgorithm.EcdsaSha256:
             case DigitalSignaturesAlgorithm.EcdsaSha384:
             case DigitalSignaturesAlgorithm.EcdsaSha512:
@@ -41,6 +43,7 @@ public class Algorithm
                 CryptographyType = CryptographyType.DigitalSignature;
                 AlgorithmType = AlgorithmType.RSA;
                 break;
+
             default:
                 throw new NotSupportedException($"Not supported algorithm {algorithm}");
         }
@@ -55,9 +58,9 @@ public class Algorithm
     public AlgorithmType AlgorithmType { get; internal set; }
     public CryptographyType CryptographyType { get; internal set; }
     public JwtType JwtType => CryptographyType == CryptographyType.Encryption ? JwtType.Jwe : JwtType.Jws;
+    public string Use => CryptographyType == CryptographyType.Encryption ? "enc" : "sig";
     public string Alg { get; internal set; }
     public string Curve { get; set; }
-
 
     public Algorithm WithCurve(string curve)
     {
@@ -83,6 +86,7 @@ public class Algorithm
             case EncryptionAlgorithmContent.Aes256Gcm:
                 EncryptionAlgorithmContent = enc;
                 break;
+
             default:
                 throw new NotSupportedException($"Not supported encryption algorithm {enc}");
         }
@@ -130,5 +134,6 @@ public class Algorithm
     }
 
     public static implicit operator string(Algorithm value) => value.Alg;
+
     public static implicit operator Algorithm(string value) => new(value);
 }

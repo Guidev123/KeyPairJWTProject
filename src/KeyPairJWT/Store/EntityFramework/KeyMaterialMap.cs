@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace KeyPairJWT.EntityFramework;
+namespace KeyPairJWT.Store.EntityFramework;
 
 public class KeyMaterialMap : IEntityTypeConfiguration<KeyMaterial>
 {
